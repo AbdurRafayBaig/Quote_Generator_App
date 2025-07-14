@@ -101,7 +101,11 @@ export class MemStorage implements IStorage {
 
   async createQuote(insertQuote: InsertQuote): Promise<Quote> {
     const id = this.currentQuoteId++;
-    const quote: Quote = { ...insertQuote, id };
+    const quote: Quote = { 
+      ...insertQuote, 
+      id,
+      category: insertQuote.category || null 
+    };
     this.quotes.set(id, quote);
     return quote;
   }
