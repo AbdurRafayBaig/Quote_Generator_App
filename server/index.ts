@@ -14,7 +14,7 @@ app.use((req: Request, res: Response, next: any) => {
   const originalResJson = res.json;
   res.json = function (bodyJson: any, ...args: any[]): Response {
     capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]);
+    return originalResJson.apply(res, [bodyJson, ...args]) as Response;
   };
 
   res.on("finish", () => {
