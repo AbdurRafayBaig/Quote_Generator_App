@@ -11,12 +11,11 @@ app.use((req: Request, res: Response, next: any) => {
   const path = req.path;
   let capturedJsonResponse: Record<string, any> | undefined;
 
-  const originalResJson = res.json;
-  res.json = function (bodyJson: any, ...args: any[]): Response {
-    capturedJsonResponse = bodyJson;
-    return originalResJson.apply(res, [bodyJson, ...args]) as Response;
-  };
-
+const originalResJson = res.json;
+res.json = function (bodyJson: any): Response {
+  capturedJsonResponse = bodyJson;
+  return originalResJson.call(res, bodyJson);
+};
   res.on("finish", () => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
@@ -60,11 +59,10 @@ app.use((req: Request, res: Response, next: any) => {
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = 5000;
-  server.listen({
-    port,
-    host: "0.0.0.0",
-    reusePort: true,
-  }, () => {
-    log(`serving on port ${port}`);
-  });
+server.listen({
+  port,
+  host: "localhost",
+}, () => {
+  log(`serving on http://localhost:${port}`);
+});
 })();
